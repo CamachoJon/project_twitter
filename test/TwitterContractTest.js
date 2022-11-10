@@ -57,7 +57,7 @@ describe("Twitter Contract", function() {
         })
     });
 
-    describe("Get all tweets", function() {
+    describe("Get tweets", function() {
         it("Should return the count of total tweets", async function(){
             const tweetsFromChain = await twitter.getAllTweets();
             expect(tweetsFromChain.length).to.equal(MY_TWEETS_COUNT + NOT_MY_TWEETS_COUNT)

@@ -50,7 +50,7 @@ contract TwitterContract {
         uint counter = 0;
 
         for (uint i = 0; i < tweets.length; i++) {
-            if(tweetToOwner[i] == msg.sender && tweets[1].isDeleted == false){
+            if(tweetToOwner[i] == msg.sender && tweets[i].isDeleted == false){
                 temporary[counter] = tweets[i];
                 counter++;
             }
