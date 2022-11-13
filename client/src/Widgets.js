@@ -16,8 +16,14 @@ function Widgets(){
   
           <TwitterTimelineEmbed
             sourceType="profile"
+            screenName="paulayes44"
+            options={{ height: 350 }}
+          />
+
+          <TwitterTimelineEmbed
+            sourceType="profile"
             screenName="Paca117"
-            options={{ height: 800 }}
+            options={{ height: 350 }}
           />
   
           <TwitterShareButton
