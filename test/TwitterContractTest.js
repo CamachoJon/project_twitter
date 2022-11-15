@@ -78,5 +78,9 @@ describe("Twitter Contract", function() {
                 twitter.connect(addr1).deleteTweet(TWEET_ID, TWEET_DELETED)
                 ).to.emit(twitter, "DeleteTweet").withArgs(TWEET_ID, TWEET_DELETED);
         })
+    });
+
+    describe("Update tweet", function(){
+        
     })
 })

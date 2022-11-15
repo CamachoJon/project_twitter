@@ -5,6 +5,7 @@ contract TwitterContract {
 
     event AddTweet(address recipient, uint tweetId);
     event DeleteTweet(uint tweetId, bool isDeleted);
+    event UpdateTweet(uint tweetId, string updatedText);
 
     struct Tweet {
         uint id;
@@ -68,6 +69,13 @@ contract TwitterContract {
         if (tweetToOwner[tweetId] == msg.sender) {
             tweets[tweetId].isDeleted = isDeleted;
             emit DeleteTweet(tweetId, isDeleted);
+        }
+    }
+
+    function updateTweet(uint tweetId, string memory updatedText) external{
+        if (tweetToOwner[tweetId] == msg.sender) {
+            tweets[tweetId].tweetText = updatedText;
+            emit UpdateTweet(tweetId, updatedText);
         }
     }
 }
