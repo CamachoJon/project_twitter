@@ -38,34 +38,35 @@ function Feed(){
       return updatedTweets;
     }
   
-    const getAllTweets = async() => {
-      try {
-        const {ethereum} = window
-  
-        if(ethereum) {
-          const provider = new ethers.providers.Web3Provider(ethereum);
-          const signer = provider.getSigner();
-          const TwitterContract = new ethers.Contract(
-            TwitterContractAddress,
-            Twitter.abi,
-            signer
-          )
-  
-          let allTweets = await TwitterContract.getAllTweets();
-          setPosts(getUpdatedTweets(allTweets, ethereum.selectedAddress));
-        } else {
-          console.log("Ethereum object doesn't exist");
-        }
-      } catch(error) {
-        console.log(error);
-      }
-    }
   
     useEffect(() => {
+      const getAllTweets = async() => {
+        try {
+          const {ethereum} = window
+    
+          if(ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const TwitterContract = new ethers.Contract(
+              TwitterContractAddress,
+              Twitter.abi,
+              signer
+            )
+    
+            let allTweets = await TwitterContract.getAllTweets();
+            setPosts(getUpdatedTweets(allTweets, ethereum.selectedAddress));
+          } else {
+            console.log("Ethereum object doesn't exist");
+          }
+        } catch(error) {
+          console.log(error);
+        }
+      }
       getAllTweets();
     }, []);
   
     const deleteTweet = key => async() => {
+      console.log("You're about to delete a tweet");
       console.log(key);
   
       // Now we got the key, let's delete our tweet
@@ -81,7 +82,7 @@ function Feed(){
             signer
           );
   
-        //   let deleteTweetTx = await TwitterContract.deleteTweet(key, true);
+          let deleteTweetTx = await TwitterContract.deleteTweet(key, true);
           let allTweets = await TwitterContract.getAllTweets();
           setPosts(getUpdatedTweets(allTweets, ethereum.selectedAddress));
         } else {
@@ -89,6 +90,7 @@ function Feed(){
         }
   
       } catch(error) {
+        console.log("There was an error");
         console.log(error);
       }
     }
