@@ -25,6 +25,11 @@
     border: none;
     padding: 10px;
   }
+
+  .post_editTweet{
+    display: flex;
+    flex-direction: column;
+  }
   
   .tweetBox__tweetButton {
     background-color: var(--twitter-color) !important;
@@ -33,9 +38,9 @@
     font-weight: 900 !important;
     text-transform: inherit !important;
     border-radius: 30px !important;
-    width: 80px;
+    width: fit-content !important;
     height: 40px !important;
     margin-top: 20px !important;
-    margin-left: auto !important;
+    
   }
   

@@ -44,4 +44,37 @@
   .post__avatar {
     padding: 20px;
   }
-  
+
+  .tweetBox__tweetButton {
+    background-color: var(--twitter-color) !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 900 !important;
+    text-transform: inherit !important;
+    border-radius: 30px !important;
+    width: 80px;
+    height: 40px !important;
+    margin-top: 20px !important;
+    margin-left: auto !important;
+  }  
+
+  .hidden{
+    visibility: hidden;
+  }
+
+  .visible{
+    display: flex;
+    flex-direction: column;
+    visibility: visible;
+  }
+
+  .button-behaviour{
+    border-color: lightgray 1px !important;
+  }
+
+  .button-behaviour :hover{
+    color: var(--twitter-color) !important;
+    cursor: pointer !important;
+    border-color: lightgray 1px !important;
+  }
+

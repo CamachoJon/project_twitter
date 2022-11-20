@@ -8,9 +8,19 @@ import RepeatIcon from "@material-ui/icons/Repeat";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import PublishIcon from "@material-ui/icons/Publish";
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit'
+import { Button } from "@material-ui/core";
+import "./Feed";
+
+const editTweet = async (e) =>{
+  let key = e.target.parentNode.getAttribute('key');
+
+  if (key != null){
+  }
+}
 
 const Post = forwardRef(
-  ({ displayName, text, personal, onClick }, ref) => {
+  ({ displayName, text, personal, onClickDelete, onClickEdit }, ref) => {
 
     return (
       <div className="post" ref={ref}>
@@ -31,14 +41,23 @@ const Post = forwardRef(
             <div className="post__headerDescription">
               <p>{text}</p>
             </div>
+            <div id="id-edit-tweet" className="hidden">
+              <input></input>
+              <Button className="tweetBox__tweetButton" onClick={editTweet}>
+                Update Tweet
+              </Button>
+            </div>
           </div>
           <div className="post__footer">
-            <ChatBubbleOutlineIcon fontSize="small" />
-            <RepeatIcon fontSize="small" />
-            <FavoriteBorderIcon fontSize="small" />
-            <PublishIcon fontSize="small" />
+            <ChatBubbleOutlineIcon className="button-behaviour" />
+            <RepeatIcon className="button-behaviour" />
+            <FavoriteBorderIcon className="button-behaviour"/>
+            <PublishIcon className="button-behaviour"/>
             {personal ? (
-              <DeleteIcon fontSize="small" onClick={onClick}/>
+              <EditIcon onClick={onClickEdit} className="button-behaviour"/>
+            ) : ("")}
+            {personal ? (
+              <DeleteIcon onClick={onClickDelete} className="button-behaviour"/>
             ) : ("")}
           </div>
         </div>

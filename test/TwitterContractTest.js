@@ -75,12 +75,26 @@ describe("Twitter Contract", function() {
             const TWEET_DELETED = true;
 
             await expect(
-                twitter.connect(addr1).deleteTweet(TWEET_ID, TWEET_DELETED)
-                ).to.emit(twitter, "DeleteTweet").withArgs(TWEET_ID, TWEET_DELETED);
+                twitter.connect(addr1).deleteTweet(TWEET_ID, TWEET_DELETED))
+                .to.emit(twitter, "DeleteTweet").withArgs(TWEET_ID, TWEET_DELETED);
         })
     });
 
     describe("Update tweet", function(){
-        
+        it("Should emit UpdateTweet event", async function(){
+            
+            const TWEET_ID = 0;
+            const tweetsFromChain = await twitter.connect(addr1).getAllTweets();
+            originalText = tweetsFromChain[TWEET_ID].tweetText
+
+            await expect(twitter.connect(addr1).updateTweet(TWEET_ID,'New text for this tweet'))
+            .to.emit(twitter, "UpdateTweet").withArgs(TWEET_ID,'New text for this tweet');
+            
+            const tweetsFromChainUpdated = await twitter.connect(addr1).getAllTweets();
+            newText = tweetsFromChainUpdated[TWEET_ID].tweetText;
+
+            expect(originalText).to.not.equal(newText);
+
+        })
     })
 })

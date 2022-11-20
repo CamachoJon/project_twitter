@@ -62,7 +62,6 @@ function App() {
   })
 
   return (
-    // BEM
     <div>
     {currentAccount === '' ? (
       <button

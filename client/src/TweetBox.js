@@ -3,7 +3,6 @@ import "./TweetBox.css";
 import Avatar from 'avataaars';
 import { generateRandomAvatarOptions } from './Avatar';
 import { Button } from "@material-ui/core";
-import axios from 'axios';
 import { TwitterContractAddress } from './config.js';
 import {ethers} from 'ethers';
 import Twitter from './utils/TwitterContract.json'
@@ -32,7 +31,7 @@ function TweetBox() {
         )
 
         let twitterTx = await TwitterContract.addTweet(tweet.tweetText, tweet.isDeleted);
-
+        window.location.reload();
         console.log(twitterTx);
       } else {
         console.log("Ethereum object doesn't exist!");
@@ -73,14 +72,6 @@ function TweetBox() {
             type="text"
           />
         </div>
-        <input
-          value={tweetImage}
-          onChange={(e) => setTweetImage(e.target.value)}
-          className="tweetBox__imageInput"
-          placeholder="Optional: Enter image URL"
-          type="text"
-        />
-
         <Button
           onClick={sendTweet}
           type="submit"

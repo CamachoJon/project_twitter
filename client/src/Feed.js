@@ -6,7 +6,9 @@ import FlipMove from "react-flip-move";
 // import axios from 'axios';
 import { TwitterContractAddress } from './config.js';
 import {ethers} from 'ethers';
-import Twitter from './utils/TwitterContract.json'
+import Twitter from './utils/TwitterContract.json';
+
+let thisKey;
 
 function Feed(){
     const [posts, setPosts] = useState([]);
@@ -66,8 +68,6 @@ function Feed(){
     }, []);
   
     const deleteTweet = key => async() => {
-      console.log("You're about to delete a tweet");
-      console.log(key);
   
       // Now we got the key, let's delete our tweet
       try {
@@ -85,6 +85,7 @@ function Feed(){
           let deleteTweetTx = await TwitterContract.deleteTweet(key, true);
           let allTweets = await TwitterContract.getAllTweets();
           setPosts(getUpdatedTweets(allTweets, ethereum.selectedAddress));
+          window.location.reload();
         } else {
           console.log("Ethereum object doesn't exist");
         }
@@ -94,26 +95,39 @@ function Feed(){
         console.log(error);
       }
     }
+
+    const editTweet = key => async(e) => {
+      e.preventDefault();
+      thisKey = key;
+
+      if (e.target.parentElement.parentElement.parentElement.childNodes[0].childNodes[2].className === "hidden") {
+        e.target.parentElement.parentElement.parentElement.childNodes[0].childNodes[2].className = "visible";
+        e.target.parentElement.parentElement.parentElement.childNodes[0].childNodes[2].childNodes[1].setAttribute('key', key);
+      }else{
+        e.target.parentElement.parentElement.parentElement.childNodes[0].childNodes[2].className = "hidden"
+      }
+    }
+
   
     return (
       <div className="feed">
         <div className="feed__header">
           <h2>Home</h2>
         </div>
-  
         <TweetBox />
-  
-        <FlipMove>
+        <FlipMove id="visible_tweets">
           {posts.map((post) => (
             <Post
               key={post.id}
               displayName={post.username}
               text={post.tweetText}
               personal={post.personal}
-              onClick={deleteTweet(post.id)}
+              onClickEdit={editTweet(post.id)}
+              onClickDelete={deleteTweet(post.id)}
             />
           ))}
         </FlipMove>
+        
       </div>
     );
 
