@@ -87,8 +87,8 @@ describe("Twitter Contract", function() {
             const tweetsFromChain = await twitter.connect(addr1).getAllTweets();
             originalText = tweetsFromChain[TWEET_ID].tweetText
 
-            await expect(twitter.connect(addr1).updateTweet(TWEET_ID,'New text for this tweet'))
-            .to.emit(twitter, "UpdateTweet").withArgs(TWEET_ID,'New text for this tweet');
+            await expect(twitter.connect(addr1).updateTweet('New text for this tweet', TWEET_ID))
+            .to.emit(twitter, "UpdateTweet").withArgs(TWEET_ID);
             
             const tweetsFromChainUpdated = await twitter.connect(addr1).getAllTweets();
             newText = tweetsFromChainUpdated[TWEET_ID].tweetText;

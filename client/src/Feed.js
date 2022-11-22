@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, forwardRef } from "react";
 import TweetBox from "./TweetBox";
-import Post from "./Post";
 import "./Feed.css";
 import FlipMove from "react-flip-move";
-// import axios from 'axios';
 import { TwitterContractAddress } from './config.js';
 import {ethers} from 'ethers';
 import Twitter from './utils/TwitterContract.json';
+import "./Post.css";
+import Avatar from 'avataaars';
+import { generateRandomAvatarOptions } from './Avatar';
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+import PublishIcon from "@material-ui/icons/Publish";
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit'
+import { Button } from "@material-ui/core";
 
-let thisKey;
 
 function Feed(){
     const [posts, setPosts] = useState([]);
@@ -37,13 +42,15 @@ function Feed(){
           updatedTweets.push(tweet);
         }
       }
+
+      console.log(updatedTweets)
       return updatedTweets;
     }
-  
   
     useEffect(() => {
       const getAllTweets = async() => {
         try {
+          console.log('Getting all tweets')
           const {ethereum} = window
     
           if(ethereum) {
@@ -66,9 +73,59 @@ function Feed(){
       }
       getAllTweets();
     }, []);
+
+    
+    const Post = forwardRef(
+      ({ displayName, text, personal, onClickDelete, onClickEdit }, ref) => {
+
+        return (
+          <div className="post" ref={ref}>
+            <div className="post__avatar">
+              <Avatar
+                style={{ width: '100px', height: '100px' }}
+                avatarStyle='Circle'
+                {...generateRandomAvatarOptions() }
+              />
+            </div>
+            <div className="post__body">
+              <div className="post__header">
+                <div className="post__headerText">
+                  <h3>
+                    {displayName}{" "}
+                  </h3>
+                </div>
+                <div className="post__headerDescription">
+                  <p>{text}</p>
+                </div>
+                <div id="id-edit-tweet" className="hidden">
+                  <form className="edit_tweet_form">
+                  <input onChange={(e) => {
+                  }} type="text" placeholder="Changed your mind?"></input>
+                  <Button className="tweetBox__tweetButton" onClick={editTweet}>
+                    Update Tweet
+                  </Button>
+                  </form>
+                </div>
+              </div>
+              <div className="post__footer">
+                <FavoriteBorderIcon className="button-behaviour"/>
+                <PublishIcon className="button-behaviour"/>
+                {personal ? (
+                  <EditIcon onClick={onClickEdit} className="button-behaviour"/>
+                ) : ("")}
+                {personal ? (
+                  <DeleteIcon onClick={onClickDelete} className="button-behaviour"/>
+                ) : ("")}
+              </div>
+            </div>
+          </div>
+        );
+      }
+    );
   
     const deleteTweet = key => async() => {
-  
+
+      console.log(key)
       // Now we got the key, let's delete our tweet
       try {
         const {ethereum} = window
@@ -96,16 +153,49 @@ function Feed(){
       }
     }
 
-    const editTweet = key => async(e) => {
+    const displayUpdate = key => async(e) => {
       e.preventDefault();
-      thisKey = key;
-
-      if (e.target.parentElement.parentElement.parentElement.childNodes[0].childNodes[2].className === "hidden") {
-        e.target.parentElement.parentElement.parentElement.childNodes[0].childNodes[2].className = "visible";
-        e.target.parentElement.parentElement.parentElement.childNodes[0].childNodes[2].childNodes[1].setAttribute('key', key);
+      let inputElement = e.target.parentElement.parentElement.parentElement.childNodes[0].childNodes[2];
+      if (inputElement.className === "hidden") {
+        inputElement.className = "visible";
+        inputElement.childNodes[0].childNodes[1].setAttribute('key', key);
       }else{
-        e.target.parentElement.parentElement.parentElement.childNodes[0].childNodes[2].className = "hidden"
+        inputElement.className = "hidden"
       }
+    }
+
+    const editTweet = async(e) =>{
+      let key = e.target.parentNode.getAttribute('key');
+      let newText = e.target.parentElement.parentElement.childNodes[0].value;
+    
+      if (key != null){
+        try {
+          const {ethereum} = window
+    
+          if(ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const TwitterContract = new ethers.Contract(
+              TwitterContractAddress,
+              Twitter.abi,
+              signer
+            );
+    
+            let editTweet = await TwitterContract.updateTweet(newText, key)
+            let allTweets = await TwitterContract.getAllTweets();
+            setPosts(getUpdatedTweets(allTweets, ethereum.selectedAddress));
+            window.location.reload();
+          } else {
+            console.log("Ethereum object doesn't exist");
+          }
+    
+        } catch(error) {
+          console.log("There was an error");
+          console.log(error);
+        }
+
+      }
+
     }
 
   
@@ -122,7 +212,7 @@ function Feed(){
               displayName={post.username}
               text={post.tweetText}
               personal={post.personal}
-              onClickEdit={editTweet(post.id)}
+              onClickEdit={displayUpdate(post.id)}
               onClickDelete={deleteTweet(post.id)}
             />
           ))}

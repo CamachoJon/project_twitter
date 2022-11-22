@@ -2,10 +2,12 @@
 pragma solidity ^0.8.9;
 
 contract TwitterContract {
+    
+    receive() external payable {}
 
     event AddTweet(address recipient, uint tweetId);
     event DeleteTweet(uint tweetId, bool isDeleted);
-    event UpdateTweet(uint tweetId, string updatedText);
+    event UpdateTweet(uint tweetId);
 
     struct Tweet {
         uint id;
@@ -72,10 +74,11 @@ contract TwitterContract {
         }
     }
 
-    function updateTweet(uint tweetId, string memory updatedText) external{
+    function updateTweet(string memory updatedText, uint tweetId ) external{
+
         if (tweetToOwner[tweetId] == msg.sender) {
             tweets[tweetId].tweetText = updatedText;
-            emit UpdateTweet(tweetId, updatedText);
+            emit UpdateTweet(tweetId);
         }
     }
 }

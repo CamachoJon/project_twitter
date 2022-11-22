@@ -35,3 +35,9 @@
     height: 200px;
     background-color: darkred;
   }
+
+  
+  .edit_tweet_form{
+    display: flex;
+    flex-direction: column;
+  }

@@ -9,7 +9,6 @@ import Twitter from './utils/TwitterContract.json'
 
 function TweetBox() {
   const [tweetMessage, setTweetMessage] = useState("");
-  const [tweetImage, setTweetImage] = useState("");
   const [avatarOptions, setAvatarOptions] = useState("");
 
   const addTweet = async () => {
@@ -47,7 +46,6 @@ function TweetBox() {
     addTweet();
 
     setTweetMessage("");
-    setTweetImage("");
   };
 
   // Similar to componentDidMount and componentDidUpdate:
@@ -66,7 +64,7 @@ function TweetBox() {
             {...avatarOptions }
           />
           <input
-            onChange={(e) => setTweetMessage(e.target.value)}
+            onChange={(e) => {setTweetMessage(e.target.value)}}
             value={tweetMessage}
             placeholder="What's happening?"
             type="text"
