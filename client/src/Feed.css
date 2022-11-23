@@ -36,8 +36,18 @@
     background-color: darkred;
   }
 
-  
   .edit_tweet_form{
     display: flex;
     flex-direction: column;
+    border-bottom: 5px solid var(--twitter-background);
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+  }
+
+  .editBox{
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    height: 50px;
+    font-size: 15px;
+    padding-left:10px;
   }

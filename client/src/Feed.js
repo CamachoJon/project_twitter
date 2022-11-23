@@ -9,7 +9,6 @@ import "./Post.css";
 import Avatar from 'avataaars';
 import { generateRandomAvatarOptions } from './Avatar';
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import PublishIcon from "@material-ui/icons/Publish";
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit'
 import { Button } from "@material-ui/core";
@@ -19,6 +18,7 @@ function Feed(){
     const [posts, setPosts] = useState([]);
   
     const getUpdatedTweets = (allTweets, address) => {
+
       let updatedTweets = [];
       // Here we set a personal flag around the tweets
       for(let i = 0; i < allTweets.length; i++) {
@@ -28,7 +28,8 @@ function Feed(){
             'tweetText': allTweets[i].tweetText,
             'isDeleted': allTweets[i].isDeleted,
             'username': allTweets[i].username,
-            'personal': true
+            'personal': true,
+            'date' : allTweets[i].date
           };
           updatedTweets.push(tweet);
         } else {
@@ -37,13 +38,14 @@ function Feed(){
             'tweetText': allTweets[i].tweetText,
             'isDeleted': allTweets[i].isDeleted,
             'username': allTweets[i].username,
-            'personal': false
+            'personal': false,
+            'date' : allTweets[i].date
           };
-          updatedTweets.push(tweet);
+          updatedTweets.push(tweet);  
         }
       }
-
-      console.log(updatedTweets)
+      
+      updatedTweets = updatedTweets.sort((a, b) => a.date < b.date ? 1 : -1)
       return updatedTweets;
     }
   
@@ -76,13 +78,13 @@ function Feed(){
 
     
     const Post = forwardRef(
-      ({ displayName, text, personal, onClickDelete, onClickEdit }, ref) => {
+      ({ displayName, text, personal, onClickDelete, onClickEdit, date }, ref) => {
 
         return (
           <div className="post" ref={ref}>
             <div className="post__avatar">
               <Avatar
-                style={{ width: '100px', height: '100px' }}
+                style={{ width: '80px', height: '80px' }}
                 avatarStyle='Circle'
                 {...generateRandomAvatarOptions() }
               />
@@ -97,10 +99,13 @@ function Feed(){
                 <div className="post__headerDescription">
                   <p>{text}</p>
                 </div>
+                <div className="post_date">
+                  <p>{date}</p>
+                </div>
                 <div id="id-edit-tweet" className="hidden">
                   <form className="edit_tweet_form">
                   <input onChange={(e) => {
-                  }} type="text" placeholder="Changed your mind?"></input>
+                  }} type="text" placeholder="Changed your mind?" className="editBox"></input>
                   <Button className="tweetBox__tweetButton" onClick={editTweet}>
                     Update Tweet
                   </Button>
@@ -109,7 +114,6 @@ function Feed(){
               </div>
               <div className="post__footer">
                 <FavoriteBorderIcon className="button-behaviour"/>
-                <PublishIcon className="button-behaviour"/>
                 {personal ? (
                   <EditIcon onClick={onClickEdit} className="button-behaviour"/>
                 ) : ("")}
@@ -155,7 +159,7 @@ function Feed(){
 
     const displayUpdate = key => async(e) => {
       e.preventDefault();
-      let inputElement = e.target.parentElement.parentElement.parentElement.childNodes[0].childNodes[2];
+      let inputElement = e.target.parentElement.parentElement.parentElement.childNodes[0].childNodes[3];
       if (inputElement.className === "hidden") {
         inputElement.className = "visible";
         inputElement.childNodes[0].childNodes[1].setAttribute('key', key);
@@ -167,6 +171,7 @@ function Feed(){
     const editTweet = async(e) =>{
       let key = e.target.parentNode.getAttribute('key');
       let newText = e.target.parentElement.parentElement.childNodes[0].value;
+      let newDate = getFulllDate(new Date());
     
       if (key != null){
         try {
@@ -181,7 +186,7 @@ function Feed(){
               signer
             );
     
-            let editTweet = await TwitterContract.updateTweet(newText, key)
+            let editTweet = await TwitterContract.updateTweet(newText, key, newDate)
             let allTweets = await TwitterContract.getAllTweets();
             setPosts(getUpdatedTweets(allTweets, ethereum.selectedAddress));
             window.location.reload();
@@ -197,6 +202,17 @@ function Feed(){
       }
 
     }
+
+    const getFulllDate = (date) => {
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var ampm = hours >= 12 ? 'pm' : 'am';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // the hour '0' should be '12'
+      minutes = minutes < 10 ? '0'+minutes : minutes;
+      var strTime = hours + ':' + minutes + ' ' + ampm;
+      return (date.getMonth()+1) + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
+    };
 
   
     return (
@@ -214,6 +230,7 @@ function Feed(){
               personal={post.personal}
               onClickEdit={displayUpdate(post.id)}
               onClickDelete={deleteTweet(post.id)}
+              date = {post.date}
             />
           ))}
         </FlipMove>

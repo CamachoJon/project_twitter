@@ -8,12 +8,13 @@ contract TwitterContract {
     event AddTweet(address recipient, uint tweetId);
     event DeleteTweet(uint tweetId, bool isDeleted);
     event UpdateTweet(uint tweetId);
-
+    
     struct Tweet {
         uint id;
         address username;
         string tweetText;
         bool isDeleted;
+        string date;
     }
 
     Tweet[] private tweets;
@@ -21,9 +22,9 @@ contract TwitterContract {
     mapping (uint256 => address) tweetToOwner;
 
 
-    function addTweet(string memory tweetText, bool isDeleted) external {
+    function addTweet(string memory tweetText, bool isDeleted, string memory date) external {
         uint tweetId = tweets.length;
-        tweets.push(Tweet(tweetId, msg.sender, tweetText, isDeleted));
+        tweets.push(Tweet(tweetId, msg.sender, tweetText, isDeleted, date));
         tweetToOwner[tweetId] = msg.sender;
         emit AddTweet(msg.sender, tweetId);
     }   
@@ -74,10 +75,10 @@ contract TwitterContract {
         }
     }
 
-    function updateTweet(string memory updatedText, uint tweetId ) external{
-
+    function updateTweet(string memory updatedText, uint tweetId, string memory newDate) external{
         if (tweetToOwner[tweetId] == msg.sender) {
             tweets[tweetId].tweetText = updatedText;
+            tweets[tweetId].date = newDate;
             emit UpdateTweet(tweetId);
         }
     }

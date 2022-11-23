@@ -10,8 +10,9 @@
   }
   
   .tweetBox__input {
-    padding: 20px;
+    padding: 10px;
     display: flex;
+    border: none;
   }
   
   .tweetBox__input > input {

@@ -24,10 +24,11 @@ describe("Twitter Contract", function() {
             let tweet = {
                 'tweetText' : 'Tweet with ID: ' + i,
                 'userName' : addr1,
-                'isDeleted' : false
+                'isDeleted' : false,
+                'date' :  `0${i}/05/1993`
             };           
             
-            await twitter.connect(addr1).addTweet(tweet.tweetText, tweet.isDeleted);
+            await twitter.connect(addr1).addTweet(tweet.tweetText, tweet.isDeleted, tweet.date);
             totalTweets.push(tweet);
         }
 
@@ -36,10 +37,11 @@ describe("Twitter Contract", function() {
             let tweet = {
                 'tweetText' : 'Tweet with ID: ' + (NOT_MY_TWEETS_COUNT + i),
                 'userName' : owner,
-                'isDeleted' : false
+                'isDeleted' : false,
+                'date' :  `1${i}/05/1993`
             }   
 
-            await twitter.addTweet(tweet.tweetText, tweet.isDeleted);
+            await twitter.addTweet(tweet.tweetText, tweet.isDeleted, tweet.date);
             totalTweets.push(tweet);
             totalMyTweets.push(tweet);
         }
@@ -49,10 +51,11 @@ describe("Twitter Contract", function() {
         it("Should emit AddTweet event", async function(){
             let tweet = {
                 'tweetText' : 'Just a random text',
-                'isDeleted' : false
+                'isDeleted' : false,
+                'tweetDate' : '07/05/1993'
             };
 
-            await expect(await twitter.addTweet(tweet.tweetText, tweet.isDeleted))
+            await expect(await twitter.addTweet(tweet.tweetText, tweet.isDeleted, tweet.tweetDate))
             .to.emit(twitter, 'AddTweet').withArgs(owner.address, NOT_MY_TWEETS_COUNT + MY_TWEETS_COUNT);
         })
     });
@@ -85,16 +88,18 @@ describe("Twitter Contract", function() {
             
             const TWEET_ID = 0;
             const tweetsFromChain = await twitter.connect(addr1).getAllTweets();
-            originalText = tweetsFromChain[TWEET_ID].tweetText
+            originalText = tweetsFromChain[TWEET_ID].tweetText;
+            originalDate = tweetsFromChain[TWEET_ID].date;
 
-            await expect(twitter.connect(addr1).updateTweet('New text for this tweet', TWEET_ID))
+            await expect(twitter.connect(addr1).updateTweet('New text for this tweet', TWEET_ID, '19/08/1965'))
             .to.emit(twitter, "UpdateTweet").withArgs(TWEET_ID);
             
             const tweetsFromChainUpdated = await twitter.connect(addr1).getAllTweets();
             newText = tweetsFromChainUpdated[TWEET_ID].tweetText;
+            newDate = tweetsFromChainUpdated[TWEET_ID].date;
 
             expect(originalText).to.not.equal(newText);
-
+            expect(originalDate).to.not.equal(newDate);
         })
     })
 })
