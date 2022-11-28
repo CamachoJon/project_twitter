@@ -29,7 +29,8 @@ function Feed(){
             'isDeleted': allTweets[i].isDeleted,
             'username': allTweets[i].username,
             'personal': true,
-            'date' : allTweets[i].date
+            'date' : allTweets[i].date,
+            'likedBy' : allTweets[i].likedBy
           };
           updatedTweets.push(tweet);
         } else {
@@ -39,7 +40,8 @@ function Feed(){
             'isDeleted': allTweets[i].isDeleted,
             'username': allTweets[i].username,
             'personal': false,
-            'date' : allTweets[i].date
+            'date' : allTweets[i].date,
+            'likedBy' : allTweets[i].likedBy
           };
           updatedTweets.push(tweet);  
         }
@@ -78,7 +80,9 @@ function Feed(){
 
     
     const Post = forwardRef(
-      ({ displayName, text, personal, onClickDelete, onClickEdit, date }, ref) => {
+      ({ displayName, text, personal, onClickDelete, onClickEdit, date, likedBy, onClickLike }, ref) => {
+
+        let classForLikeButton = likedBy.length > 0 ? "liked_tweet" : "button-behaviour";
 
         return (
           <div className="post" ref={ref}>
@@ -113,7 +117,10 @@ function Feed(){
                 </div>
               </div>
               <div className="post__footer">
-                <FavoriteBorderIcon className="button-behaviour"/>
+                <div className="likes">
+                <FavoriteBorderIcon onClick={onClickLike} className={classForLikeButton}/>
+                <p className={classForLikeButton}>{likedBy.length}</p>
+                </div>
                 {personal ? (
                   <EditIcon onClick={onClickEdit} className="button-behaviour"/>
                 ) : ("")}
@@ -198,7 +205,34 @@ function Feed(){
           console.log("There was an error");
           console.log(error);
         }
+      }
 
+    }
+
+    const addRemoveLike = key => async(e) => {
+      try {
+        const {ethereum} = window
+  
+        if(ethereum) {
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const TwitterContract = new ethers.Contract(
+            TwitterContractAddress,
+            Twitter.abi,
+            signer
+          );
+  
+          let addRemoveLike = await TwitterContract.addRemoveLikeFromTweet(key)
+          let allTweets = await TwitterContract.getAllTweets();
+          setPosts(getUpdatedTweets(allTweets, ethereum.selectedAddress));
+          window.location.reload();
+        } else {
+          console.log("Ethereum object doesn't exist");
+        }
+  
+      } catch(error) {
+        console.log("There was an error");
+        console.log(error);
       }
 
     }
@@ -231,6 +265,8 @@ function Feed(){
               onClickEdit={displayUpdate(post.id)}
               onClickDelete={deleteTweet(post.id)}
               date = {post.date}
+              likedBy = {post.likedBy}
+              onClickLike = {addRemoveLike(post.id)}
             />
           ))}
         </FlipMove>

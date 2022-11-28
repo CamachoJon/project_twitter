@@ -17,6 +17,7 @@
   
   .post__footer {
     display: flex;
+    align-items: center;
     justify-content: space-around;
     margin-top: 5px;
   }
@@ -78,6 +79,7 @@
 
   .button-behaviour{
     border-color: lightgray 1px !important;
+    margin-right: 10px;
   }
 
   .button-behaviour :hover{
@@ -85,4 +87,10 @@
     cursor: pointer !important;
     border-color: lightgray 1px !important;
   }
+
+  .likes{
+    display: flex;
+    align-items: center;
+  }
+
 
