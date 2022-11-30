@@ -9,7 +9,9 @@ function App() {
   const [currentAccount, setCurrentAccount] = useState('');
   const [correctNetwork, setCorrectNetwork] = useState(false);
 
-  //Connect to Metamask wallet
+  /**
+   * @dev validaates that a user is connected to Goerli network
+   */
   const connectWallet = async() => {
     try{
       const {ethereum} = window
@@ -41,7 +43,9 @@ function App() {
     }
   }
 
-  
+  /**
+   * @dev validates that a user is connected to Goerli network
+   */
   const checkCorrectNetwork = async () => {
     const { ethereum } = window
     let chainId = await ethereum.request({ method: 'eth_chainId' })

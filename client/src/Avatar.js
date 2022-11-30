@@ -179,6 +179,10 @@ const configs = {
   
   const configsKeys = Object.keys(configs);
   
+  /**
+  * @dev Generates a random avatar 
+  * @return Generated avatar 
+  */
   export function generateRandomAvatarOptions() {
     const options = { }
     const keys = [...configsKeys]

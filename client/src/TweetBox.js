@@ -11,6 +11,9 @@ function TweetBox() {
   const [tweetMessage, setTweetMessage] = useState("");
   const [avatarOptions, setAvatarOptions] = useState("");
 
+  /**
+   * @dev Validates connection to metamask wallet and adds a tweet 
+   */
   const addTweet = async () => {
 
     let date = getFulllDate(new Date());
@@ -36,7 +39,6 @@ function TweetBox() {
 
         let twitterTx = await TwitterContract.addTweet(tweet.tweetText, tweet.isDeleted, date);
         window.location.reload();
-        console.log(twitterTx);
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -45,6 +47,9 @@ function TweetBox() {
     }
   }
 
+  /**
+   * @dev function that send the tweet to the net
+   */
   const sendTweet = (e) => {
     e.preventDefault();
 
@@ -53,6 +58,11 @@ function TweetBox() {
     setTweetMessage("");
   };
 
+ /**
+  * @dev changes the format to "DD/MM/YYYY 00:00 AM/PM"
+  * @param {*} date timestamp
+  * @returns returns the date of the tweet with the new format 
+  */
   const getFulllDate = (date) => {
     var hours = date.getHours();
     var minutes = date.getMinutes();
@@ -64,7 +74,6 @@ function TweetBox() {
     return (date.getMonth()+1) + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
   };
 
-  // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
     let avatar = generateRandomAvatarOptions();
     setAvatarOptions(avatar);

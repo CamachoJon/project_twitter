@@ -23,7 +23,12 @@ contract TwitterContract {
 
     mapping (uint256 => address) tweetToOwner;
 
-
+    /**
+     * @dev a private function to add tweets
+     * @param tweetText text to be added in the tweet
+     * @param isDeleted a flag to detect the deleted state of the tweet
+     * @param date the time that the tweet was created
+     */
     function addTweet(string memory tweetText, bool isDeleted, string memory date) external {
         
         uint tweetId = tweets.length;
@@ -32,7 +37,10 @@ contract TwitterContract {
         tweetToOwner[tweetId] = msg.sender;
         emit AddTweet(msg.sender, tweetId);
     }   
-
+    /**
+     * @dev a private function to retrieve all tweets
+     * @return result returns an array with all the tweets with a false state in isDeleted
+     */
     function getAllTweets() external view returns (Tweet[] memory){
         Tweet[] memory temporary = new Tweet[](tweets.length);
         uint counter = 0;
@@ -51,7 +59,10 @@ contract TwitterContract {
 
         return result;
     }
-
+    /**
+     * @dev a private function to retrieve all the tweets from current users
+     * @return result returns an array with all the tweets from the current user with a false state in isDeleted
+     */
     function getMyTweets() external view returns (Tweet[] memory){
 
         Tweet[] memory temporary = new Tweet[](tweets.length);
@@ -71,14 +82,23 @@ contract TwitterContract {
 
         return result;
     }
-
+    /**
+     * @dev a private function to update the deleted status of a given tweet
+     * @param tweetId id of a given tweet
+     * @param isDeleted new status for deleted flag (true)
+     */
     function deleteTweet(uint tweetId, bool isDeleted) external{
         if (tweetToOwner[tweetId] == msg.sender) {
             tweets[tweetId].isDeleted = isDeleted;
             emit DeleteTweet(tweetId, isDeleted);
         }
     }
-
+    /**
+     * @dev a private function to update a given tweet
+     * @param updatedText updated text of tweet
+     * @param tweetId id of tweet to be updated
+     * @param newDate the time that the tweet was updated
+     */
     function updateTweet(string memory updatedText, uint tweetId, string memory newDate) external{
         if (tweetToOwner[tweetId] == msg.sender) {
             tweets[tweetId].tweetText = updatedText;
@@ -86,7 +106,10 @@ contract TwitterContract {
             emit UpdateTweet(tweetId);
         }
     }
-
+    /**
+     * @dev a private function to add or remove likes from a given tweet
+     * @param tweetId id of the given tweet
+     */
     function addRemoveLikeFromTweet(uint tweetId) external{
         bool isLikedByUser = false;
         for (uint i = 0; i < tweets[tweetId].likedBy.length; i++) {

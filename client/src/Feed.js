@@ -17,6 +17,12 @@ import { Button } from "@material-ui/core";
 function Feed(){
     const [posts, setPosts] = useState([]);
   
+    /**
+     * @dev Retrieves a sorted array of all the existing tweets which are not deleted 
+     * @param {*} allTweets array with all the non-deleted tweets 
+     * @param {*} address wallet address of the current user 
+     * @returns returns a sorted array with the updated tweets (from newest to oldest) 
+     */
     const getUpdatedTweets = (allTweets, address) => {
 
       let updatedTweets = [];
@@ -52,9 +58,11 @@ function Feed(){
     }
   
     useEffect(() => {
+      /**
+       * @dev Validates connection to metamask wallet and retrieves all the not-deleted tweets 
+       */
       const getAllTweets = async() => {
         try {
-          console.log('Getting all tweets')
           const {ethereum} = window
     
           if(ethereum) {
@@ -78,7 +86,9 @@ function Feed(){
       getAllTweets();
     }, []);
 
-    
+    /**
+     * @return HTML with elements used in a post
+     */
     const Post = forwardRef(
       ({ displayName, text, personal, onClickDelete, onClickEdit, date, likedBy, onClickLike }, ref) => {
 
@@ -134,10 +144,13 @@ function Feed(){
       }
     );
   
+    /**
+     * @dev validates the user's wallet and updates the isDeleted flag of the given tweet to true
+     * @param {*} key wallet address of current user 
+     * 
+     */
     const deleteTweet = key => async() => {
 
-      console.log(key)
-      // Now we got the key, let's delete our tweet
       try {
         const {ethereum} = window
   
@@ -164,6 +177,10 @@ function Feed(){
       }
     }
 
+    /**
+     * @dev shows or hides the edit tweet element
+     * @param {*} key  wallet address of the current user 
+     */
     const displayUpdate = key => async(e) => {
       e.preventDefault();
       let inputElement = e.target.parentElement.parentElement.parentElement.childNodes[0].childNodes[3];
@@ -174,7 +191,10 @@ function Feed(){
         inputElement.className = "hidden"
       }
     }
-
+    /**
+     *@dev validates user's address and updates the text of the given tweet 
+     * @param e is the wallet address of the user 
+     */
     const editTweet = async(e) =>{
       let key = e.target.parentNode.getAttribute('key');
       let newText = e.target.parentElement.parentElement.childNodes[0].value;
@@ -209,6 +229,10 @@ function Feed(){
 
     }
 
+    /**
+     * @dev alidates user's address and adds or removes the like from the given tweet 
+     * @param {*} key walllet address of the users
+     */
     const addRemoveLike = key => async(e) => {
       try {
         const {ethereum} = window
@@ -237,6 +261,11 @@ function Feed(){
 
     }
 
+    /**
+     * @dev changes the format to "DD/MM/YYYY 00:00 AM/PM"
+     * @param {*} date timestamp
+     * @returns returns the date of the tweet with the new format 
+     */
     const getFulllDate = (date) => {
       var hours = date.getHours();
       var minutes = date.getMinutes();
