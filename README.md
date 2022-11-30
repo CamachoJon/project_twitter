@@ -1,13 +1,11 @@
-# Sample Hardhat Project
+Twitter clone using Solidity.
+Fial version of the code can be found in "master" branch.
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+Link: https://twitter-clone-solidity.netlify.app/
 
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
+Team members:
+  CAMACHO, Jonathan
+  CHISTYAKOV, Nikita 
+  KAREEM, Leelav
+  YAGO, Paula
+  
